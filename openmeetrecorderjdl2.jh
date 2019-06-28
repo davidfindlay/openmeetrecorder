@@ -1,0 +1,305 @@
+entity Meet {
+	meetName String,
+    startDate Date,
+    endDate Date,
+    deadline Date,
+}
+
+entity Sanction {
+	sanctionId String,
+}
+
+relationship OneToOne {
+	Meet{sanction} to Sanction
+}
+
+relationship ManyToOne {
+	Sanction{organisation} to Organisation{sanctions}
+}
+
+entity SwimmingMeet {
+   ageUpDate Date,
+}
+
+relationship OneToOne {
+	SwimmingMeet{meet} to Meet
+}
+
+relationship OneToMany {
+	Meet{locations} to Address
+}
+
+entity Country {
+	countryName String
+}
+
+// an ignored comment
+/** not an ignored comment */
+entity Address {
+	locationName String,
+	streetAddress1 String,
+    streetAddress2 String,
+	postalCode String,
+}
+
+entity Suburb {
+	suburbName String
+}
+
+entity State {
+	stateName String,
+    stateAbbreviation String
+}
+
+relationship OneToOne {
+	Address{state} to State
+}
+
+relationship OneToOne {
+	State{country} to Country
+}
+
+relationship OneToOne {
+	Suburb{state} to State
+}
+
+relationship OneToOne {
+	Address{suburb} to Suburb
+}
+
+relationship OneToOne { 
+	Suburb{country} to Country
+}
+
+relationship OneToOne {
+	Address{country} to Country
+}
+
+entity Person {
+	firstName String,
+    middleNames String,
+    lastName String,
+    dateOfBirth Date,
+}
+
+entity Athlete {
+	entryId String,
+}
+
+entity Membership {
+	membershipId String,
+    startDate Date,
+    endDate Date
+}
+
+relationship OneToOne {
+	Membership{organisation} to Organisation{memberships}
+}
+
+relationship OneToMany {
+	Person{memberships} to Membership{person}
+}
+
+relationship OneToOne {
+	Athlete{person} to Person
+}
+
+relationship OneToMany {
+	Athlete{teams} to Team
+}
+
+entity Team {
+	teamName String
+}
+
+relationship OneToOne {
+	Team{organisation} to Organisation{teams}
+}
+
+entity Organisation {
+	organisationName String
+}
+
+relationship OneToOne {
+	Organisation{address} to Address
+}
+
+relationship OneToOne {
+	Organisation{postal} to Address
+}
+
+relationship OneToMany {
+	Person{organisations} to Organisation
+}
+
+relationship OneToMany {
+	Organisation{parents} to Organisation
+}
+
+entity MeetRole {
+	roleName String
+}
+
+relationship ManyToMany {
+	MeetRole{meets} to Meet{roles}
+}
+
+entity MeetSession {
+	sessionName String,
+    sessionStart DateTime,
+    sessionEnd DateTime,
+    warmUpStart DateTime,
+    warmUpEnd DateTime,
+}
+
+relationship OneToMany {
+	Meet{sessions} to MeetSession{meet}
+}
+
+entity MeetEvent {
+	eventName String,
+	eventNumber String,
+    eventOrder Integer,
+
+}
+
+entity SwimmingPoolIndividualEvent {
+    discipline Discipline,
+    distance Integer,
+    course Course
+}
+
+relationship OneToOne {
+	SwimmingPoolIndividualEvent{meetEvent} to MeetEvent
+}
+
+entity SwimmingPoolRelayEvent {
+	numberLegs Integer
+}
+
+relationship OneToOne {
+	SwimmingPoolRelayEvent{meetEvent} to MeetEvent
+}
+
+entity SwimmingPoolRelayEventLeg {
+	leg Integer
+    discipline Discipline,
+    distance Integer
+}
+
+relationship OneToMany {
+	SwimmingPoolRelayEvent{legs} to SwimmingPoolRelayEventLeg{relayEvent}
+}
+
+enum Course {
+	ShortCourseMetres,
+    LongCourseMetres,
+    ShortCourseYards,
+    LongCourseYards
+}
+
+enum Discipline {
+	Freestyle,
+    Backstroke,
+    Breaststroke,
+    Butterfly,
+    IndividualMedley
+}
+
+relationship OneToMany {
+	MeetSession{events} to MeetEvent{session}
+}
+
+relationship OneToMany {
+	Meet{events} to MeetEvent{meet}
+}
+
+entity MeetSessionCheckIn {
+	checkIn DateTime,
+    checkOut DateTime
+}
+
+relationship ManyToOne {
+	MeetSessionCheckIn{athlete} to Athlete{checkIns}
+}
+
+relationship OneToMany {
+	MeetSession{checkIns} to MeetSessionCheckIn{meetSession}
+}
+
+entity Round {
+	roundName String
+}
+
+entity MeetEventRounds {
+	roundLevel Integer
+}
+
+relationship ManyToOne {
+	MeetEventRounds{round} to Round
+}
+
+relationship OneToMany {
+	MeetEvent{rounds} to MeetEventRounds{meetEvent}
+}
+
+entity MeetEntry {
+}
+
+entity ManyToOne {
+	MeetEntry{team} to Team{meetEntries}
+}
+
+entity MeetEventEntry {
+	seedTime: Float
+}
+
+relationship OneToMany {
+	MeetEntry{eventEntries} to MeetEventEntry{meetEntry}
+}
+
+relationship OneToMany {
+	MeetEvent{entries} to MeetEventEntry{meetEvent}
+}
+
+relationship OneToMany {
+	MeetEntry{meet} to Meet{entries}
+}
+
+relationship OneToMany {
+	Athlete{meetEntries} to MeetEntry{athlete}
+}
+
+entity SwimmingPoolConfiguration {
+	numberOfLanes Integer
+}
+
+relationship ManyToOne {
+	SwimmingPoolIndividualEvent{poolConfiguration} to SwimmingPoolConfiguration
+}
+
+relationship ManyToOne {
+	SwimmingPoolRelayEvent{poolConfiguration} to SwimmingPoolConfiguration
+}
+
+entity SwimmingPoolLane {
+	laneId String,
+    priority Integer
+}
+
+relationship OneToMany {
+	SwimmingPoolConfiguration{lanes} to SwimmingPoolLane{configuration}
+}
+
+// Set pagination options
+// paginate JobHistory, Employee with infinite-scroll
+// paginate Job with pagination
+
+// Use Data Transfert Objects (DTO)
+// dto * with mapstruct
+
+// Set service options to all except few
+// service all with serviceImpl except Employee, Job
+
+// Set an angular suffix
+// angularSuffix * with mySuffix
